@@ -27,7 +27,7 @@ function App() {
   const [audioBase64, setAudioBase64] = useState<string>('');
   const [settings, setSettings] = useState<CaptureSettings>({
     serverUrl: 'http://localhost:8080',
-    instruction: 'Giả sử tôi là một người không nhìn thấy gì, hãy mô tả những gì bạn đang thấy một cách càng chi tiết càng tốt.',
+    instruction: 'Mô tả và trích xuất thông tin từ hình ảnh này. Trả lời bằng tiếng Việt.',
     ttsServerUrl: 'http://localhost:5000',
     enableTTS: true,
     ttsLanguage: 'vi'
@@ -88,7 +88,7 @@ function App() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          max_tokens: 128,
+          max_tokens: 512,
           temperature: 0,
           messages: [
             {
@@ -307,9 +307,12 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-0">
       {/* Navbar */}
       <nav className="w-full bg-white shadow-md fixed top-0 left-0 z-50">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
-          <div className="font-bold text-xl text-blue-700 tracking-tight">VisionAid Flatform</div>
-          <ul className="flex items-center gap-6">
+        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-2">
+          <div className="flex items-center gap-2">
+            <img src="/icon2.png" alt="VisionAid Logo" className="w-12 h-12" />
+            <span className="font-bold text-3xl text-blue-700 tracking-tight">VisionAid Flatform</span>
+          </div>
+          <ul className="flex items-center gap-7 text-[1rem]">
             <li>
               <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">About us</a>
             </li>
@@ -326,7 +329,7 @@ function App() {
               <a
                 href="#demo"
                 onClick={handleDemoClick}
-                className="text-white bg-blue-600 hover:bg-blue-700 font-semibold px-4 py-2 rounded-lg shadow transition-colors"
+                className="text-white bg-blue-600 hover:bg-blue-700 font-semibold px-5 py-2.5 rounded-lg shadow transition-colors"
               >
                 Demo
               </a>
@@ -746,31 +749,25 @@ function App() {
                   <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="text-blue-600 font-bold">1</span>
                   </div>
-                  <p>Nhấn "Khởi động Camera" để bắt đầu</p>
+                  <p>Nhấn Khởi động Camera (hoặc tải hình ảnh lên trên App)</p>
                 </div>
+                {/* <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-blue-600 font-bold">2</span>
+                  </div>
+                  <p>Cấu hình TTS server URL (mặc định: localhost:5000)</p>
+                </div> */}
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="text-blue-600 font-bold">2</span>
                   </div>
-                  <p>Cấu hình Gemini API key trong Settings</p>
+                  <p>Tiếp theo hãy điều chỉnh góc máy và nhấn vào nút chụp ảnh</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="text-blue-600 font-bold">3</span>
                   </div>
-                  <p>Cấu hình TTS server URL (mặc định: localhost:5000)</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-blue-600 font-bold">4</span>
-                  </div>
-                  <p>Điều chỉnh góc máy và nhấn "Chụp ảnh"</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-blue-600 font-bold">5</span>
-                  </div>
-                  <p>Xem kết quả và nghe giọng nói AI</p>
+                  <p>Xem kết quả và chờ để nhận được audio phân tích từ AI từ server</p>
                 </div>
               </div>
               
@@ -792,17 +789,32 @@ function App() {
                 <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
                   <div className="flex items-start gap-3">
                     <Volume2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-green-800 font-medium text-sm mb-1">Tính năng Text-to-Speech</p>
-                      <p className="text-green-700 text-xs">
-                        Chuyển đổi kết quả phân tích thành giọng nói tiếng Việt tự nhiên. 
-                        Cần chạy TTS server trên localhost:5000 để sử dụng tính năng này.
+                    <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded-xl shadow-sm">
+                      <p className="text-green-800 font-semibold text-base mb-2">
+                        🎯 Tính năng nổi trội VisionAid
                       </p>
+                      <p className="text-gray-700 text-sm leading-relaxed space-y-2">
+                        Dự án là một hệ thống hỗ trợ thông minh dành cho người khiếm thị hoặc gặp khó khăn về thị lực. 
+                        Ứng dụng cho phép người dùng chụp ảnh trực tiếp từ camera hoặc tải ảnh từ thiết bị lên, sau đó sử dụng công nghệ <strong>AI Image Captioning</strong> để phân tích và mô tả nội dung hình ảnh bằng văn bản một cách chi tiết, dễ hiểu.
+
+                        <br /><br />
+                        Đặc biệt, phần mô tả này sẽ được truyền qua module <strong>Text-to-Speech</strong>, giúp người dùng nghe được thông tin mô tả, cảnh báo hoặc hướng dẫn một cách tự nhiên và nhanh chóng.
+
+                        <br /><br />
+                        Tất cả quy trình diễn ra <strong>tự động, trực quan, thân thiện</strong> — hướng tới mục tiêu giúp người dùng khiếm thị tiếp cận thông tin thị giác một cách an toàn và hiệu quả hơn.
+
+                        <br /><br />
+                        Chúng tôi cam kết <strong>bảo vệ tuyệt đối</strong> mọi thông tin cá nhân và hình ảnh mà người dùng cung cấp. Khi sử dụng dịch vụ của chúng tôi, dữ liệu của bạn sẽ được xử lý trong một quy trình khép kín và tuyệt đối không được chia sẻ với bất kỳ bên thứ ba nào.
+                      </p>
+                      {/* Audio player for the above description */}
+                      <div className="mt-4 flex items-center gap-2">
+                        <audio controls src="../output.wav" className="w-full" />
+                      </div>
                     </div>
                   </div>
                 </div>
                 {/* Donate Section */}
-                <div className="mt-8 bg-white rounded-xl shadow-lg p-6">
+                <div className="mt-8 bg-gray-50 rounded-xl shadow-lg p-6">
                   <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-purple-600" />
                     Ủng hộ tác giả
